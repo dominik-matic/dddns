@@ -1,0 +1,12 @@
+services:
+  mysql:
+    image: mysql
+    container_name: dns-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: dnsdb
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+
