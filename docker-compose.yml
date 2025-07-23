@@ -1,12 +1,36 @@
 services:
   mysql:
     image: mysql
-    container_name: dns-mysql
+    container_name: dddns-mysql
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: dnsdb
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
     volumes:
       - ./initdb:/docker-entrypoint-initdb.d
-    ports:
-      - "3306:3306"
+    env_file:
+      - .env
 
+  authdns:
+    image: dominikmatic/dddns-authdns:latest
+    container_name: dddns-authdns
+    restart: unless-stopped
+    ports:
+      - "53:53/udp"
+    env_file:
+      - .env
+    depends_on:
+      -  mysql
+
+  apiserver:
+    image: dominikmatic/dddns-apiserver:latest
+    container_name: dddns-apiserver
+    restart: unless-stopped
+    ports:
+      - "53535:53535"
+    env_file:
+      - .env
+    depends_on:
+      -  mysql

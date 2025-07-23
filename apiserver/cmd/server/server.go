@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -16,7 +15,6 @@ func main() {
 	dbHost := os.Getenv("DB_HOST")
 	dbName := os.Getenv("DB_NAME")
 	authToken := os.Getenv("AUTH_TOKEN")
-	fmt.Println(dbUser, dbPass, dbHost, dbName)
 	err := db.Connect(dbUser + ":" + dbPass + "@tcp(" + dbHost + ":3306)/" + dbName)
 	if err != nil {
 		log.Fatalf("DB error: %v", err)
