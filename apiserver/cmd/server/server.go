@@ -20,7 +20,7 @@ func main() {
 		log.Fatalf("DB error: %v", err)
 	}
 
-	http.HandleFunc("/update", apiserver.NewUpdateHandler(authToken))
+	http.HandleFunc("/", apiserver.NewUpdateHandler(authToken))
 
 	port := "53530"
 	log.Printf("Listening on :%s", port)

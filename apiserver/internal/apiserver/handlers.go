@@ -13,7 +13,6 @@ import (
 
 func NewUpdateHandler(authToken string) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		fmt.Println("Handling shit")
 		if ok, msg := validateMethod(request); !ok {
 			http.Error(writer, msg, http.StatusMethodNotAllowed)
 			return
@@ -30,14 +29,14 @@ func NewUpdateHandler(authToken string) http.HandlerFunc {
 			return
 		}
 
-		if ok, msg := validateRequestData(&data); !ok {
+		if ok, msg := validateRequestData(&data, request.Method); !ok {
 			http.Error(writer, msg, http.StatusBadRequest)
 			return
 		}
 
 		prepareData(&data)
 
-		if data.Action == "update" {
+		if request.Method == http.MethodPost {
 			err = db.InsertOrUpdate(data)
 		} else {
 			err = db.Delete(data)
@@ -55,7 +54,6 @@ func prepareData(data *models.RequestData) {
 	data.Name = strings.ToLower(data.Name)
 	data.Type = strings.ToUpper(data.Type)
 	data.Value = strings.ToLower(data.Value)
-	data.Action = strings.ToLower(data.Action)
 
 	if data.Type == "" {
 		data.Type = "A"

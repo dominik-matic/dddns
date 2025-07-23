@@ -8,8 +8,8 @@ import (
 )
 
 func validateMethod(request *http.Request) (bool, string) {
-	if request.Method != http.MethodPost {
-		return false, "Only POST allowed"
+	if request.Method != http.MethodPost && request.Method != http.MethodDelete {
+		return false, "Only POST and DELETE allowed"
 	}
 	return true, ""
 }
@@ -22,15 +22,11 @@ func validateAuthorization(request *http.Request, expectedToken string) (bool, s
 	return true, ""
 }
 
-func validateRequestData(data *models.RequestData) (bool, string) {
-	action := strings.ToLower(data.Action)
-	if action != "update" && action != "delete" {
-		return false, "Invalid action"
-	}
+func validateRequestData(data *models.RequestData, method string) (bool, string) {
 	if data.Name == "" {
 		return false, "Missing field: name"
 	}
-	if action == "update" && data.Value == "" {
+	if method == http.MethodPost && data.Value == "" {
 		return false, "Missing field: value"
 	}
 	return true, ""
