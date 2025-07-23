@@ -1,0 +1,17 @@
+services:
+  nginx:
+    image: nginx:1.29.0-alpine
+    container_name: nginx
+    ports:
+      - "53535:53535"
+    volumes:
+      - type: bind
+        source: /opt/dddns/nginx/nginx.conf
+        target: /etc/nginx/nginx.conf
+        read_only: true
+      - type: bind
+        source: /etc/letsencrypt
+        target: /etc/letsencrypt
+        read_only: true
+    restart: 'unless-stopped'
+

@@ -22,7 +22,7 @@ func main() {
 
 	http.HandleFunc("/update", apiserver.NewUpdateHandler(authToken))
 
-	port := "53535"
+	port := "53530"
 	log.Printf("Listening on :%s", port)
 	if http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatalf("Server error: %v", err)

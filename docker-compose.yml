@@ -28,8 +28,6 @@ services:
     image: dominikmatic/dddns-apiserver:latest
     container_name: dddns-apiserver
     restart: unless-stopped
-    ports:
-      - "53535:53535"
     env_file:
       - .env
     depends_on:
