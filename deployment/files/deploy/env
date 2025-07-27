@@ -1,0 +1,6 @@
+# Overwrite in CI/CD
+DB_USER=my_db_user
+DB_PASS=my_strong_password
+DB_HOST=my_db_host
+DB_NAME=my_db_name
+AUTH_TOKEN=my_very_strong_auth_token

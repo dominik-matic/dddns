@@ -19,7 +19,7 @@
 
   - name: copy .env to deploy directory
     copy:
-      src: files/deploy/.env
+      src: files/deploy/env
       dest: "{{ deploy_path }}/.env"
       owner: root
       group: root
