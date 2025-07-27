@@ -1,0 +1,56 @@
+name: Build the docker images and deploy
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+jobs:
+  build_and_push_images:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Log into dockerhub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+    - name: Build the Authoritative DNS image
+      run: |
+        cd authdns
+        docker build -t dominikmatic/dddns-authdns:latest .
+    - name: Build the API server image
+      run: |
+        cd apiserver
+        docker build -t dominikmatic/dddns-apiserver:latest .
+    - name: Push the authdns Docker image
+      run: docker push dominikmatic/dddns-authdns:latest
+    - name: Push the apiserver Docker image
+      run: docker push dominikmatic/dddns-apiserver:latest
+  deploy:
+    needs: build_and_push_images
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: template .env file
+      run: |
+        cat <<EOF > ./deployment/files/deploy/.env
+DB_USER=${{ secrets.DB_USER }}
+DB_PASS=${{ secrets.DB_PASS }}
+DB_HOST=${{ secrets.DB_HOST }}
+DB_NAME=${{ secrets.DB_NAME }}
+AUTH_TOKEN=${{ secrets.AUTH_TOKEN }}
+EOF
+
+    - name: Run ansible playbook
+      uses: dawidd6/action-ansible-playbook@v2
+      with:
+        # Required, playbook filepath
+        playbook: deployment/deploy.yml
+        # Optional, SSH private key
+        key: ${{secrets.ANSIBLE_PRIVATE_KEY}}
+        # Optional, literal inventory file contents
+        inventory: |
+          [dddns_servers]
+          3.73.187.39
+        # Optional, SSH known hosts file content
+        known_hosts: |
+          3.73.187.39 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFPYJDOesJo7cyobs6S4mjhhud13BpmG0GnLZ/Q8yf7Y
+        options: |
+          -u ansible    
