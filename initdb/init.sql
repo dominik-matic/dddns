@@ -15,4 +15,3 @@ INSERT INTO dns_records (name, type, value, ttl) VALUES
 ('dominikmatic.com', 'A', '3.73.187.39', 300),
 ('www.dominikmatic.com', 'A', '3.73.187.39', 300),
 ('*.dominikmatic.com', 'A', '3.73.187.39', 300);
-

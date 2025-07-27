@@ -1,0 +1,86 @@
+---
+
+- hosts: dddns_servers
+  become: true
+
+  vars:
+    deploy_path: /opt/dddns
+    nginx_conf_dir: "{{ deploy_path }}/nginx"
+    initdb_conf_dir: "{{ deploy_path }}/initdb"
+
+  tasks:
+  - name: ensure deploy directory exists
+    file:
+      path: "{{ deploy_path }}"
+      state: directory
+      owner: root
+      group: root
+      mode: '0755'
+
+  - name: copy .env to deploy directory
+    copy:
+      src: files/deploy/.env
+      dest: "{{ deploy_path }}/.env"
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: copy docker-compose.yml and docker-compose.prod.yml to deploy directory
+    copy:
+      src: "files/deploy/{{ item }}"
+      dest: "{{ deploy_path }}/{{ item }}"
+      owner: root
+      group: root
+      mode: '0644'
+    loop:
+      - docker-compose.yml
+      - docker-compose.prod.yml
+
+  - name: ensure nginx config directory exists
+    file:
+      path: "{{ nginx_conf_dir }}"
+      state: directory
+      owner: root
+      group: root
+      mode: '0755'
+
+  - name: copy nginx.conf to nginx config directory
+    copy:
+      src: files/deploy/nginx.conf
+      dest: "{{ nginx_conf_dir }}/nginx.conf"
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: ensure initdb directory exists
+    file:
+      path: "{{ initdb_conf_dir }}"
+      state: directory
+      owner: root
+      group: root
+      mode: '0755'
+
+  - name: copy init.sql to initdb directory
+    copy:
+      src: files/deploy/init.sql
+      dest: "{{ initdb_conf_dir }}/init.sql"
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Pull docker images
+    community.docker.docker_compose_v2:
+      project_src: "{{ deploy_path }}"
+      files:
+        - docker-compose.yml
+        - docker-compose.prod.yml
+      pull: always
+
+  - name: run docker compose up -d
+    community.docker.docker_compose_v2:
+      project_src: "{{ deploy_path }}"
+      files:
+        - docker-compose.yml
+        - docker-compose.prod.yml
+      state: present
+      recreate: auto

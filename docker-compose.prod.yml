@@ -1,7 +1,7 @@
 services:
   nginx:
     image: nginx:1.29.0-alpine
-    container_name: nginx
+    container_name: dddns-apiserver-nginx
     ports:
       - "53535:53535"
     volumes:
