@@ -31,13 +31,12 @@ jobs:
     - name: template .env file
       run: |
         cat <<EOF > ./deployment/files/deploy/.env
-DB_USER=${{ secrets.DB_USER }}
-DB_PASS=${{ secrets.DB_PASS }}
-DB_HOST=${{ secrets.DB_HOST }}
-DB_NAME=${{ secrets.DB_NAME }}
-AUTH_TOKEN=${{ secrets.AUTH_TOKEN }}
-EOF
-
+        DB_USER=${{ secrets.DB_USER }}
+        DB_PASS=${{ secrets.DB_PASS }}
+        DB_HOST=${{ secrets.DB_HOST }}
+        DB_NAME=${{ secrets.DB_NAME }}
+        AUTH_TOKEN=${{ secrets.AUTH_TOKEN }}
+        EOF
     - name: Run ansible playbook
       uses: dawidd6/action-ansible-playbook@v2
       with:
