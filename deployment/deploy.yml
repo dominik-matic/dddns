@@ -68,6 +68,14 @@
       group: root
       mode: '0644'
 
+- name: Stop existing containers
+  community.docker.docker_compose_v2:
+    project_src: "{{ deploy_path }}"
+    files:
+      - docker-compose.yml
+      - docker-compose.prod.yml
+    state: absent
+
   - name: Pull and deploy containers
     community.docker.docker_compose_v2:
       project_src: "{{ deploy_path }}"
