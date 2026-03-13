@@ -68,19 +68,13 @@
       group: root
       mode: '0644'
 
-  - name: Pull docker images
+  - name: Pull and deploy containers
     community.docker.docker_compose_v2:
       project_src: "{{ deploy_path }}"
       files:
         - docker-compose.yml
         - docker-compose.prod.yml
       pull: always
-
-  - name: run docker compose up -d
-    community.docker.docker_compose_v2:
-      project_src: "{{ deploy_path }}"
-      files:
-        - docker-compose.yml
-        - docker-compose.prod.yml
       state: present
       recreate: auto
+      remove_orphans: true
