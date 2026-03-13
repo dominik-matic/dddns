@@ -7,6 +7,11 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+// Currently no support for multiple records of the same
+// (name, type), but I don't really need that.
+// Maybe something to implement in the future,
+// should be pretty easy
+
 var DB *sql.DB
 
 func Connect(dataSourceName string) error {
@@ -22,8 +27,8 @@ func InsertOrUpdate(data models.RequestData) error {
 	var id int
 	err := DB.QueryRow(`
 		SELECT id FROM dns_records
-		WHERE name = ? AND type = ? AND value = ?`,
-		data.Name, data.Type, data.Value,
+		WHERE name = ? AND type = ?`,
+		data.Name, data.Type,
 	).Scan(&id)
 
 	switch err {
