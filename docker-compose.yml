@@ -22,7 +22,8 @@ services:
     image: dominikmatic/dddns-authdns:latest
     container_name: dddns-authdns
     restart: unless-stopped
-    network_mode: host
+    ports:
+      - "53:53/udp"
     env_file:
       - .env
     depends_on:
