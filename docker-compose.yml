@@ -15,14 +15,14 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "100m"
+        max-size: "50m"
+        max-file: "2"
 
   authdns:
     image: dominikmatic/dddns-authdns:latest
     container_name: dddns-authdns
     restart: unless-stopped
-    ports:
-      - "53:53/udp"
+    network_mode: host
     env_file:
       - .env
     depends_on:
@@ -30,7 +30,8 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "100m"
+        max-size: "50m"
+        max-file: "2"
 
   apiserver:
     image: dominikmatic/dddns-apiserver:latest
@@ -43,4 +44,5 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "100m"
+        max-size: "50m"
+        max-file: "2"
